@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Persistence;
 
 namespace API
@@ -30,6 +31,11 @@ namespace API
             services.AddDbContext<DataContext>(
                 item => item.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Auditing Service", Version = "v1" });
+            });
+
             services.AddControllers();
         }
 
@@ -46,6 +52,12 @@ namespace API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Reactivities Service");
+            });
 
             app.UseEndpoints(endpoints =>
             {
