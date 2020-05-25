@@ -36,6 +36,12 @@ namespace API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Auditing Service", Version = "v1" });
             });
 
+            services.AddCors(opt => {
+                opt.AddPolicy("CorsPolicy", policy => {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                });
+            });
+
             services.AddControllers();
         }
 
@@ -58,6 +64,8 @@ namespace API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Reactivities Service");
             });
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {
